@@ -11,15 +11,32 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout repo
       - uses: actions/checkout@v3
+
+      # 2. Setup Node.js
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
+
+      # 3. Install dependencies
       - run: npm install
-      - run: npm run build
-      - uses: actions/deploy-pages@v4
+
+      # 4. Build project
+      - run: npm run build   # React ili Vite komanda
+
+      # 5. Upload build folder kao artefakt
+      - uses: actions/upload-artifact@v3
         with:
-          folder: 'build'   # ili 'dist' ako koristiš Vite
+          name: github-pages
+          path: build    # promeni u 'dist' ako koristiš Vite
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # 6. Deploy Pages (uzima artefakt automatski)
+      - uses: actions/deploy-pages@v4
