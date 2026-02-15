@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,5 +19,7 @@ jobs:
         with:
           node-version: '18'
       - run: npm install
-      - run: npm run build   # tvoja komanda za build sajta
+      - run: npm run build
       - uses: actions/deploy-pages@v4
+        with:
+          folder: 'build'   # ili 'dist' ako koristiš Vite
